@@ -62,6 +62,7 @@ class PhonemeEngine:
         self.words = words
         self.word = self.get_new_word()
 
+    @property
     def pron(self):
         if self.word:
             data = {
@@ -82,23 +83,21 @@ class PhonemeEngine:
                     match = re.match(pattern, word_plus)
                     if match:
                         return match.group(0)
+        return self.pron()
 
     def get_phonemes(self):
-        pron = self.pron()
-        if pron:
-            original_phonemes = list(pron)
-            if "'" in original_phonemes:
-                original_phonemes.remove("'")
-            if "," in original_phonemes:
-                original_phonemes.remove(",")
-            if 'ˈ' in original_phonemes:
-                original_phonemes.remove('ˈ')
-            if 'ː' in original_phonemes:
-                original_phonemes.remove('ː')
-            phonemes = original_phonemes.copy()
-            random.shuffle(phonemes)
-            return phonemes, original_phonemes
-        return [], []
+        original_phonemes = list(self.pron)
+        if "'" in original_phonemes:
+            original_phonemes.remove("'")
+        if "," in original_phonemes:
+            original_phonemes.remove(",")
+        if 'ˈ' in original_phonemes:
+            original_phonemes.remove('ˈ')
+        if 'ː' in original_phonemes:
+            original_phonemes.remove('ː')
+        phonemes = original_phonemes.copy()
+        random.shuffle(phonemes)
+        return phonemes, original_phonemes
 
     def set_positions(self):
         self.test_positions = {}

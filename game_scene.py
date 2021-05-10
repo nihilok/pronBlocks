@@ -36,6 +36,8 @@ class MainGame(Entity):
         print(word)
         print(self.phoneme_store.phonemes)
         if word is not None:
+            while not self.phoneme_store.phonemes:
+                time.sleep(0.2)
             self.help_text.text = f'The word is: "{self.phoneme_store.word}"\nLeft click in the green area to lay a phoneme,\nright click to pick one up.'
             self.help_text.enable()
             self.score_text.text = f'Score: {self.score}'
