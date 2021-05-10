@@ -64,7 +64,6 @@ class WordInputScreen(Entity):
         def update_word_list():
             self.word_list = [word.strip() for word in self.text_field.text.split()]
             self.word_list = re.split(' |, ', self.text_field.text)
-            print(self.word_list)
             self.main_menu.enable()
             self.options_menu.disable()
 
@@ -113,7 +112,7 @@ class WordInputScreen(Entity):
     # You can use it similar to input with checking
     # what menu is currently enabled
     def update(self):
-        pass
+        self.main_game.spin_block()
 
 # Setup window title
 window.title = "Pron Blocks"

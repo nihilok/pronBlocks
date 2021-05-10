@@ -40,6 +40,7 @@ class Voxel(Button):
                             voxel = Voxel(self.phoneme_store, self.parent_game, position=self.position + mouse.normal,
                                           texture=self.phoneme_store.textures.get(phoneme, 'white_cube'), text=phoneme, highlight_color=color.gray)
                             self.parent_game.voxels.append(voxel)
+                            self.parent_game.score -= 1
                             self.phoneme_store.test_positions[self.position[0]] = phoneme
                             self.play_sound(phoneme)
                             if not len(self.phoneme_store.phonemes):
@@ -63,12 +64,11 @@ class Voxel(Button):
     def check_win(self):
         check = ''.join(self.phoneme_store.test_positions.values())
         test = ''.join(self.phoneme_store.original_phonemes)
-        print(check)
-        print(test)
         if check == test and not self.parent_game.correct:
             self.parent_game.help_text.text = 'CORRECT!'
             PhonemeEngine.sounds.get('win').play()
             self.parent_game.correct = True
+            self.parent_game.score += len(self.phoneme_store.original_phonemes) + self.parent_game.difficulty
             invoke(self.parent_game.build, delay=2)
         elif not self.parent_game.correct and check != test:
             PhonemeEngine.sounds.get('lose').play()

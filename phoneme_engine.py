@@ -3,6 +3,11 @@ from random import randint
 import requests
 import re
 from ursina import Audio
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 class PhonemeEngine:
     sounds = {
@@ -14,6 +19,36 @@ class PhonemeEngine:
         'l': Audio('sounds/l.mp3', autoplay=False),
         'n': Audio('sounds/n.mp3', autoplay=False),
         's': Audio('sounds/s.mp3', autoplay=False),
+        'ɪ': Audio('sounds/i.mp3', autoplay=False),
+        'h': Audio('sounds/h.mp3', autoplay=False),
+        'f': Audio('sounds/f.mp3', autoplay=False),
+        'g': Audio('sounds/g.mp3', autoplay=False),
+        'i': Audio('sounds/ii.mp3', autoplay=False),
+        'd': Audio('sounds/d.mp3', autoplay=False),
+        'p': Audio('sounds/p.mp3', autoplay=False),
+        't': Audio('sounds/t.mp3', autoplay=False),
+        'z': Audio('sounds/z.mp3', autoplay=False),
+        'u': Audio('sounds/u.mp3', autoplay=False),
+        'r': Audio('sounds/r.mp3', autoplay=False),
+        'v': Audio('sounds/v.mp3', autoplay=False),
+        'w': Audio('sounds/w.mp3', autoplay=False),
+        'k': Audio('sounds/k.mp3', autoplay=False),
+        'ʊ': Audio('sounds/oo.mp3', autoplay=False),
+        'ð': Audio('sounds/the.mp3', autoplay=False),
+        'ɔ': Audio('sounds/or.mp3', autoplay=False),
+        'θ': Audio('sounds/th.mp3', autoplay=False),
+        'ʃ': Audio('sounds/sh.mp3', autoplay=False),
+        'ʧ': Audio('sounds/ch.mp3', autoplay=False),
+        'ɛ': Audio('sounds/e.mp3', autoplay=False),
+        'ʒ': Audio('sounds/zi.mp3', autoplay=False),
+        'e': Audio('sounds/e.mp3', autoplay=False),
+        'o': Audio('sounds/o.mp3', autoplay=False),
+        'ɒ': Audio('sounds/o.mp3', autoplay=False),
+        'ɜ': Audio('sounds/ir.mp3', autoplay=False),
+        'ŋ': Audio('sounds/ng.mp3', autoplay=False),
+        'ʤ': Audio('sounds/dge.mp3', autoplay=False),
+        'a': Audio('sounds/ai.mp3', autoplay=False),
+        'ɑ': Audio('sounds/ar.mp3', autoplay=False),
         'win': Audio('sounds/twang.mp3', autoplay=False),
         'lose': Audio('sounds/rasberry.mp3', autoplay=False),
 
@@ -43,7 +78,7 @@ class PhonemeEngine:
         'k': 'k.png',
         'ʊ': 'oo.png',
         'ð': 'the.png',
-        'ɔ': 'o.png',
+        'ɔ': 'or.png',
         'θ': 'th.png',
         'ʃ': 'sh.png',
         'ʧ': 'ch.png',
@@ -51,16 +86,18 @@ class PhonemeEngine:
         'ʒ': 'zi.png',
         'e': 'e.png',
         'o': 'uh.png',
-        'ɑ': 'o.png',
+        'ɒ': 'o.png',
         'ɜ': 'ir.png',
-        'ŋ': 'ng.png'
+        'ŋ': 'ng.png',
+        'ʤ': 'dge.png',
+        'a': 'ai.png',
+        'ɑ': 'ar.png'
     }
 
     def __init__(self, words: list):
-        self.phonemes = []
-        self.original_phonemes = []
         self.words = words
-        self.word = self.get_new_word()
+        self.word = ''
+        self.phonemes, self.original_phonemes = [], []
 
     @property
     def pron(self):
@@ -82,8 +119,10 @@ class PhonemeEngine:
                     pattern = r'^\w+'
                     match = re.match(pattern, word_plus)
                     if match:
-                        return match.group(0)
-        return self.pron()
+                        pron = match.group(0)
+                        logger.debug(f'Pron: {pron}')
+                        return pron
+        return ''
 
     def get_phonemes(self):
         original_phonemes = list(self.pron)
@@ -97,6 +136,8 @@ class PhonemeEngine:
             original_phonemes.remove('ː')
         phonemes = original_phonemes.copy()
         random.shuffle(phonemes)
+        logger.debug(f'Original Phonemes: {original_phonemes}')
+        logger.debug(f'Shuffled Phonemes: {phonemes}')
         return phonemes, original_phonemes
 
     def set_positions(self):
@@ -105,14 +146,17 @@ class PhonemeEngine:
             self.test_positions[i] = ''
         return self.test_positions
 
+    def set_up_word(self, index):
+        self.word = self.words.pop(index)
+        self.phonemes, self.original_phonemes = self.get_phonemes()
+        self.set_positions()
+
     def get_new_word(self):
         if len(self.words) > 1:
             index = randint(0, len(self.words) - 1)
-            self.word = self.words.pop(index)
-            self.phonemes, self.original_phonemes = self.get_phonemes()
-            self.set_positions()
+            self.set_up_word(index)
         elif len(self.words) == 1:
-            self.word = self.words.pop(0)
+            self.set_up_word(0)
         else:
             self.word = None
         return self.word
