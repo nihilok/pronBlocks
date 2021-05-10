@@ -102,6 +102,7 @@ class PhonemeEngine:
         self.phonemes, self.original_phonemes = [], []
         self.full_audio_dict = {}
 
+    # TODO: make the next 2 methods async:
     @property
     def pron(self):
         if self.word:

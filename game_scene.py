@@ -71,11 +71,19 @@ class MainGame(Entity):
                 self.player.z = 1
         else:
             self.destroy_all()
+            self.build_platform()
+            self.correct = False
             if self.score > 0:
                 self.help_text.text = f'GAME OVER! YOU WIN!\nYour score: {self.score}'
             else:
                 self.help_text.text = f'GAME OVER! YOU LOSE!\nYour score: {self.score}'
             self.update_score()
+
+    def build_platform(self):
+        for z in range(ARENA_DEPTH + 1):
+            for x in range(ARENA_DEPTH + 1):
+                voxel = Voxel(self.phoneme_store, self, position=(x, 0, z))
+                self.voxels.append(voxel)
 
     def update_score(self):
         self.score_text.text = f'Score: {self.score}'

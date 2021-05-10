@@ -161,9 +161,9 @@ class WordInputScreen(Entity):
         if self.main_game.enabled:
             if key == "escape":
                 # Close help window and show main menu
-                self.main_game.disable()
-                self.main_game.player.disable()
                 self.main_menu.enable()
+                self.main_game.player.disable()
+                self.main_game.disable()
 
     def update(self):
         self.main_game.spin_block()
