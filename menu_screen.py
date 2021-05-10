@@ -145,7 +145,14 @@ class WordInputScreen(Entity):
         if self.main_menu.enabled:
             if key == "escape":
                 # Close app
-                application.quit()
+                if self.main_game.phoneme_store.words:
+                    print('got it')
+                    self.main_game.enable()
+                    self.main_game.player.enable()
+                    self.main_menu.disable()
+                    self.background.disable()
+                else:
+                    application.quit()
             if key == "down":
                 self.mbl.selection_marker.y -= 1
             if key == "up":
@@ -162,6 +169,7 @@ class WordInputScreen(Entity):
             if key == "escape":
                 # Close help window and show main menu
                 self.main_menu.enable()
+                self.background.enable()
                 self.main_game.player.disable()
                 self.main_game.disable()
 
