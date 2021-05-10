@@ -49,6 +49,7 @@ class PhonemeEngine:
         'ʤ': Audio('sounds/dge.mp3', autoplay=False),
         'a': Audio('sounds/ai.mp3', autoplay=False),
         'ɑ': Audio('sounds/ar.mp3', autoplay=False),
+        'ʌ': Audio('sounds/uhh.mp3', autoplay=False),
         'win': Audio('sounds/twang.mp3', autoplay=False),
         'lose': Audio('sounds/rasberry.mp3', autoplay=False),
 
@@ -91,7 +92,8 @@ class PhonemeEngine:
         'ŋ': 'ng.png',
         'ʤ': 'dge.png',
         'a': 'ai.png',
-        'ɑ': 'ar.png'
+        'ɑ': 'ar.png',
+        'ʌ': 'uhh.png'
     }
 
     def __init__(self, words: list):

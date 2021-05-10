@@ -1,3 +1,5 @@
+import json
+
 from ursina import *
 
 app = Ursina()
@@ -17,14 +19,13 @@ class WordInputScreen(Entity):
         self.main_menu = Entity(parent=self, enabled=True)
         self.options_menu = Entity(parent=self, enabled=False)
         self.main_game = MainGame(enabled=False, parent=self)
-
-        self.word_list = ['ambulance', 'balance', 'assurance', 'development']
-
-        # Add a background. You can change 'shore' to a different texture of you'd like.
-        self.background = Sprite('index', color=color.dark_gray, z=1)
+        with open('word_list.json', 'r') as f:
+            self.word_list = json.load(f)['word_list']
 
         # [MAIN MENU] WINDOW START
-        # Title of our menu
+        self.background = Sprite('index', color=color.dark_gray, z=1, scale=3)
+
+        # Main Title:
         Text("PRON BLOCKS", parent=self.main_menu, y=0.4, x=0, origin=(0, 0))
 
         # Reference of our action function for quit button
@@ -62,8 +63,11 @@ class WordInputScreen(Entity):
             self.options_menu.disable()
 
         def update_word_list():
-            self.word_list = [word.strip() for word in self.text_field.text.split()]
+            # self.word_list = [word.strip() for word in self.text_field.text.split()]
             self.word_list = re.split(' |, ', self.text_field.text)
+            json_obj = {'word_list': self.word_list}
+            with open('word_list.json', 'w') as f:
+                json.dump(json_obj, f)
             self.main_menu.enable()
             self.options_menu.disable()
 
@@ -80,23 +84,16 @@ class WordInputScreen(Entity):
                on_click=update_word_list)
         # [OPTIONS MENU] WINDOW END
 
-        # Here we can change attributes of this class when call this class
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    # Input function that check if key pressed on keyboard
     def input(self, key):
-        # And if you want use same keys on different windows
-        # Like [Escape] or [Enter] or [Arrows]
-        # Just write like that:
 
-        # If our main menu enabled and we press [Escape]
         if self.main_menu.enabled:
             if key == "escape":
                 # Close app
                 application.quit()
 
-        # If our options menu enabled and we press [Escape]
         if self.options_menu.enabled:
             if key == "escape":
                 # Close options window and show main menu
@@ -108,9 +105,6 @@ class WordInputScreen(Entity):
                 # Close help window and show main menu
                 application.quit()
 
-    # Update function that check something every frame
-    # You can use it similar to input with checking
-    # what menu is currently enabled
     def update(self):
         self.main_game.spin_block()
 
