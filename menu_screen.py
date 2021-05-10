@@ -78,17 +78,9 @@ class WordInputScreen(Entity):
             self.main_menu.disable()
             self.text_field.enable()
 
-        def start_game():
-            self.main_game.phoneme_store = PhonemeEngine(self.word_list)
-            self.main_game.build()
-            self.main_game.enable()
-            self.main_menu.disable()
-            self.background.disable()
-            self.main_game.generate_player()
-
         # Button list
         self.mbl = MyButtonList(button_dict={
-            "Start": Func(start_game),
+            "Start": Func(self.start_game),
             "Words": Func(options_menu_btn),
             "Exit": Func(quit_game)
         }, y=-0.35, parent=self.main_menu)
@@ -120,6 +112,13 @@ class WordInputScreen(Entity):
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    def start_game(self):
+        self.main_game.phoneme_store = PhonemeEngine(self.word_list)
+        self.main_game.build()
+        self.main_game.enable()
+        self.main_menu.disable()
+        self.background.disable()
 
     def update_word_list(self):
         # self.word_list = [word.strip() for word in self.text_field.text.split()]

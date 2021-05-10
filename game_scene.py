@@ -1,6 +1,7 @@
-from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene
+from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene, invoke
 from ursina.prefabs.first_person_controller import FirstPersonController
 
+from phoneme_engine import PhonemeEngine
 from voxel import Voxel
 from constants import ARENA_DEPTH
 
@@ -33,15 +34,40 @@ class MainGame(Entity):
         self.player = None
         self.rotated_y = 30
         self.next_block = Entity(parent=camera.ui, rotation=Vec3(10, 30, 30), model='cube', scale=.1, x=.7, y=.2, texture='index')
-        self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-1, z=-1, y=2, on_click=self.give_up, enabled=False, rotation=Vec3(0, 180, 0), scale_x=2)
+        self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-1, z=ARENA_DEPTH, y=3, on_click=self.give_up, enabled=False, scale_x=2)
+        self.reset_button = Button(parent=scene, text='reset', double_sided=True, x=3, z=-1, y=2, on_click=self.reset, enabled=False, rotation=Vec3(0, 180, 0), scale_x=2)
 
     def give_up(self):
-        self.build()
+        self.score -= 1
+        if self.phoneme_store.words:
+            self.build()
+        else:
+            self.end_game()
+
+    def end_game(self):
+        self.destroy_all()
+        self.build_platform()
+        self.correct = False
+        self.update_score()
+        if self.score > 0:
+            self.help_text.text = f'GAME OVER! YOU WIN!\nYour score: {self.score}'
+        else:
+            self.help_text.text = f'GAME OVER! YOU LOSE!\nYour score: {self.score}'
+
+    def reset(self):
+        self.destroy_all()
+        self.reset_button.disable()
+        self.menu_screen.main_game.disable()
+        self.update_counter = 0
+        self.menu_screen.update_word_list()
+        self.phoneme_store.words = self.menu_screen.word_list
+        self.menu_screen.disable()
+        self.menu_screen.main_game = MainGame(self.menu_screen, enabled=False, parent=self.menu_screen)
+        self.menu_screen.start_game()
+        destroy(self)   # :(
 
     def build(self):
-
         word = self.phoneme_store.get_new_word()
-
         if word is not None:
             self.update_counter = 0
             self.help_text.text = f'The word is: "{self.phoneme_store.word}"\nLeft click in the green area to lay a phoneme,\nright click to pick one up.'
@@ -65,26 +91,23 @@ class MainGame(Entity):
                     if voxel.position[2] == ARENA_DEPTH:
                         voxel.color = color.lime
                         voxel.texture = 'white_cube'
-                self.give_up_button.enable()
             if self.player:
                 self.player.y = 0
                 self.player.x = len(self.phoneme_store.phonemes) // 2
                 self.player.z = 1
-        else:
-            self.destroy_all()
-            self.build_platform()
-            self.correct = False
-            if self.score > 0:
-                self.help_text.text = f'GAME OVER! YOU WIN!\nYour score: {self.score}'
             else:
-                self.help_text.text = f'GAME OVER! YOU LOSE!\nYour score: {self.score}'
-            self.update_score()
+                self.generate_player()
+        else:
+            self.end_game()
+
 
     def build_platform(self):
         for z in range(ARENA_DEPTH + 1):
             for x in range(ARENA_DEPTH + 1):
                 voxel = Voxel(self.phoneme_store, self, position=(x, 0, z))
                 self.voxels.append(voxel)
+        self.reset_button.enable()
+        self.give_up_button.disable()
 
     def update_score(self):
         self.score_text.text = f'Score: {self.score}'
@@ -93,7 +116,6 @@ class MainGame(Entity):
         for v in self.voxels:
             destroy(v)
         self.voxels = []
-        # display_text_input()
 
     def generate_player(self):
         self.player = FirstPersonController()
@@ -118,4 +140,4 @@ class MainGame(Entity):
         if self.update_counter is not None:
             self.update_counter += 1
         if self.update_counter > 1000:
-            pass
+            self.give_up_button.enable()
