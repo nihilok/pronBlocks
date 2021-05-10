@@ -69,6 +69,7 @@ class Voxel(Button):
             PhonemeEngine.sounds.get('win').play()
             self.parent_game.correct = True
             self.parent_game.score += len(self.phoneme_store.original_phonemes) + self.parent_game.difficulty
-            invoke(self.parent_game.build, delay=2)
+            invoke(self.phoneme_store.full_audio_dict[self.phoneme_store.word].play, delay=1)
+            invoke(self.parent_game.build, delay=4)
         elif not self.parent_game.correct and check != test:
             PhonemeEngine.sounds.get('lose').play()

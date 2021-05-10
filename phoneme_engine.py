@@ -2,7 +2,7 @@ import random
 from random import randint
 import requests
 import re
-from ursina import Audio
+from ursina import Audio, destroy
 import logging
 
 logger = logging.getLogger(__name__)
@@ -100,6 +100,7 @@ class PhonemeEngine:
         self.words = words
         self.word = ''
         self.phonemes, self.original_phonemes = [], []
+        self.full_audio_dict = {}
 
     @property
     def pron(self):
@@ -125,6 +126,25 @@ class PhonemeEngine:
                         logger.debug(f'Pron: {pron}')
                         return pron
         return ''
+
+    def get_full_audio(self):
+        url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
+        params = {
+            # "credentials": "omit",
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
+                "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
+                "Accept-Language": "en-GB,en;q=0.5",
+                "Range": "bytes=0-"
+            },
+            # "referrer": "https://howjsay.com/",
+            # "mode": "cors"
+        }
+        response = requests.get(url, **params)
+        file = response.content
+        open(f'sounds/{self.word}.mp3', 'wb').write(file)
+        self.full_audio_dict[self.word] = Audio(f'sounds/{self.word}.mp3')
+
 
     def get_phonemes(self):
         original_phonemes = list(self.pron)
@@ -152,6 +172,7 @@ class PhonemeEngine:
         self.word = self.words.pop(index)
         self.phonemes, self.original_phonemes = self.get_phonemes()
         self.set_positions()
+        self.get_full_audio()
 
     def get_new_word(self):
         if len(self.words) > 1:
