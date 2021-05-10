@@ -1,6 +1,7 @@
+import random
 from typing import Optional
 
-from ursina import *
+from ursina import Button, scene, color, invoke, mouse, destroy
 from constants import ARENA_DEPTH
 from phoneme_engine import PhonemeEngine
 

@@ -1,4 +1,4 @@
-from ursina import *
+from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene
 from ursina.prefabs.first_person_controller import FirstPersonController
 
 from voxel import Voxel
@@ -6,9 +6,9 @@ from constants import ARENA_DEPTH
 
 
 class MainGame(Entity):
-    def __init__(self, **kwargs):
+    def __init__(self, menu_screen, **kwargs):
         super().__init__(**kwargs)
-
+        self.menu_screen = menu_screen
         self.phoneme_store = None
         self.voxels = []
         self.correct = False
@@ -31,7 +31,11 @@ class MainGame(Entity):
         )
         self.player = None
         self.rotated_y = 30
-        self.next_block = Entity(parent=camera.ui, rotation=Vec3(10, 30, 30), model='cube', scale=.1, x=.6, y=.2, texture='index')
+        self.next_block = Entity(parent=camera.ui, rotation=Vec3(10, 30, 30), model='cube', scale=.1, x=.7, y=.2, texture='index')
+        self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-1, z=-1, y=2, on_click=self.give_up, enabled=False, rotation=Vec3(0, 180, 0), scale_x=2)
+
+    def give_up(self):
+        self.build()
 
     def build(self):
 
@@ -60,13 +64,13 @@ class MainGame(Entity):
                     if voxel.position[2] == ARENA_DEPTH:
                         voxel.color = color.lime
                         voxel.texture = 'white_cube'
+                self.give_up_button.enable()
             if self.player:
                 self.player.y = 0
                 self.player.x = len(self.phoneme_store.phonemes) // 2
                 self.player.z = 1
         else:
             self.destroy_all()
-            application.pause()
             if self.score > 0:
                 self.help_text.text = f'GAME OVER! YOU WIN!\nYour score: {self.score}'
             else:
@@ -92,6 +96,8 @@ class MainGame(Entity):
     def spin_block(self):
         self.rotated_y -= 1
         self.next_block.rotation = Vec3(10, self.rotated_y, 30)
+
+
 
     def update(self):
         if self.player.y <= -100:
