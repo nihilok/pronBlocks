@@ -13,6 +13,7 @@ class MainGame(Entity):
         self.voxels = []
         self.correct = False
         self.started = False
+        self.update_counter = None
         self.score = 0
         self.difficulty = 3     # lower difficulty is harder
         self.help_text = Text(
@@ -42,7 +43,7 @@ class MainGame(Entity):
         word = self.phoneme_store.get_new_word()
 
         if word is not None:
-
+            self.update_counter = 0
             self.help_text.text = f'The word is: "{self.phoneme_store.word}"\nLeft click in the green area to lay a phoneme,\nright click to pick one up.'
             self.help_text.enable()
             self.score_text.text = f'Score: {self.score}'
@@ -94,7 +95,6 @@ class MainGame(Entity):
         self.voxels = []
         # display_text_input()
 
-
     def generate_player(self):
         self.player = FirstPersonController()
         self.player.y = 0
@@ -104,8 +104,6 @@ class MainGame(Entity):
     def spin_block(self):
         self.rotated_y -= 1
         self.next_block.rotation = Vec3(10, self.rotated_y, 30)
-
-
 
     def update(self):
         if self.player.y <= -100:
@@ -117,3 +115,7 @@ class MainGame(Entity):
         else:
             self.next_block.texture = 'index'
         self.spin_block()
+        if self.update_counter is not None:
+            self.update_counter += 1
+        if self.update_counter > 1000:
+            pass
