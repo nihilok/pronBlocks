@@ -60,7 +60,8 @@ class Voxel(Button):
                     if not self.parent_game.correct:
                         self.phoneme_store.phonemes.append(self.text)
                         self.parent_game.voxels.remove(self)
-                        self.phoneme_store.test_positions.remove((self.position[0], self.text))
+                        if (self.position[0], self.text) in self.phoneme_store.test_positions:
+                            self.phoneme_store.test_positions.remove((self.position[0], self.text))
                         destroy(self)
                     else:
                         self.play_sound(self.text)

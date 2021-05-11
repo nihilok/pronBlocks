@@ -58,7 +58,7 @@ class WordInputScreen(Entity):
         # Create empty entities that will be parents of our menus content
         self.main_menu = Entity(parent=self, enabled=True)
         self.options_menu = Entity(parent=self, enabled=False)
-        self.main_game = MainGame(self, enabled=False, parent=self)
+        self.main_game = MainGame(enabled=False, parent=self)
         with open('word_list.json', 'r') as f:
             self.word_list = json.load(f)['word_list']
 
