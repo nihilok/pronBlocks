@@ -6,7 +6,7 @@ from ursina import Audio, destroy
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class PhonemeEngine:
@@ -163,9 +163,7 @@ class PhonemeEngine:
         return phonemes, original_phonemes
 
     def set_positions(self):
-        self.test_positions = {}
-        for i in range(len(self.phonemes)):
-            self.test_positions[i] = ''
+        self.test_positions = []
         return self.test_positions
 
     def set_up_word(self, index):

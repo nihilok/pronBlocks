@@ -1,4 +1,4 @@
-from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene, invoke
+from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene, invoke, Vec2
 from ursina.prefabs.first_person_controller import FirstPersonController
 
 from phoneme_engine import PhonemeEngine
@@ -32,6 +32,9 @@ class MainGame(Entity):
             enabled=False
         )
         self.player = None
+        self.ground = Entity(model='plane', scale=(100, 1, 100), y=-1, color=color.yellow.tint(-.2), texture='white_cube',
+                             texture_scale=(100, 100), collider='box', enabled=False)
+
         self.rotated_y = 30
         self.next_block = Entity(parent=camera.ui, rotation=Vec3(10, 30, 30), model='cube', scale=.1, x=.7, y=.2, texture='index')
         self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-1, z=ARENA_DEPTH, y=3, on_click=self.give_up, enabled=False, scale_x=2)
@@ -56,6 +59,7 @@ class MainGame(Entity):
 
     def reset(self):
         self.destroy_all()
+        destroy(self.ground)
         self.reset_button.disable()
         self.menu_screen.main_game.disable()
         self.update_counter = 0
@@ -67,6 +71,7 @@ class MainGame(Entity):
         destroy(self)   # :(
 
     def build(self):
+        self.started = True
         word = self.phoneme_store.get_new_word()
         if word is not None:
             self.update_counter = 0
@@ -102,10 +107,8 @@ class MainGame(Entity):
 
 
     def build_platform(self):
-        for z in range(ARENA_DEPTH + 1):
-            for x in range(ARENA_DEPTH + 1):
-                voxel = Voxel(self.phoneme_store, self, position=(x, 0, z))
-                self.voxels.append(voxel)
+        self.ground.enable()
+        self.update_counter = None
         self.reset_button.enable()
         self.give_up_button.disable()
 
@@ -119,6 +122,10 @@ class MainGame(Entity):
 
     def generate_player(self):
         self.player = FirstPersonController()
+        self.player.speed += 2
+        self.player.mouse_sensitivity = Vec2(50, 50)
+        self.player.jump_duration = .3
+        self.player.gravity *= .8
         self.player.y = 0
         self.player.x = len(self.phoneme_store.phonemes) // 2
         self.player.z = 1
@@ -139,5 +146,5 @@ class MainGame(Entity):
         self.spin_block()
         if self.update_counter is not None:
             self.update_counter += 1
-        if self.update_counter > 1000:
-            self.give_up_button.enable()
+            if self.update_counter > 1000:
+                self.give_up_button.enable()

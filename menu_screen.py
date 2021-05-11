@@ -114,7 +114,13 @@ class WordInputScreen(Entity):
             setattr(self, key, value)
 
     def start_game(self):
-        self.main_game.phoneme_store = PhonemeEngine(self.word_list)
+        if not self.main_game.started:
+            self.main_game.phoneme_store = PhonemeEngine(self.word_list)
+        else:
+            self.main_game.phoneme_store.words = self.word_list
+            destroy(self.main_game.player)
+            self.main_game.player = None
+
         self.main_game.build()
         self.main_game.enable()
         self.main_menu.disable()
