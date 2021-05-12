@@ -130,7 +130,7 @@ class PhonemeEngine:
             #             return pron
             # print(self.pron_response[0][0])
             return self.pron_response[0][0]
-        return ''
+        return None
 
     def get_full_audio(self):
         # url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
@@ -152,28 +152,30 @@ class PhonemeEngine:
 
     def get_phonemes(self):
         pron = self.pron()
-        pron = pron.replace('ɛ', 'e')
-        pron = pron.replace('əː', 'ɜː')
-        pron = pron.replace('a', 'æ')
-        pron = pron.replace('ɛː', 'eə')
-        pron = pron.replace('ʌɪ', 'aɪ')
-        pron = pron.replace('(ə)', '')
-        original_phonemes = list(pron)
-        if "'" in original_phonemes:
-            original_phonemes.remove("'")
-        if "," in original_phonemes:
-            original_phonemes.remove(",")
-        if 'ˈ' in original_phonemes:
-            original_phonemes.remove('ˈ')
-        if 'ː' in original_phonemes:
-            original_phonemes.remove('ː')
-        if 'ˌ' in original_phonemes:
-            original_phonemes.remove('ˌ')
-        phonemes = original_phonemes.copy()
-        random.shuffle(phonemes)
-        logger.debug(f'Original Phonemes: {original_phonemes}')
-        logger.debug(f'Shuffled Phonemes: {phonemes}')
-        return phonemes, original_phonemes
+        if pron:
+            pron = pron.replace('ɛ', 'e')
+            pron = pron.replace('əː', 'ɜː')
+            pron = pron.replace('a', 'æ')
+            pron = pron.replace('ɛː', 'eə')
+            pron = pron.replace('ʌɪ', 'aɪ')
+            pron = pron.replace('(ə)', '')
+            original_phonemes = list(pron)
+            if "'" in original_phonemes:
+                original_phonemes.remove("'")
+            if "," in original_phonemes:
+                original_phonemes.remove(",")
+            if 'ˈ' in original_phonemes:
+                original_phonemes.remove('ˈ')
+            if 'ː' in original_phonemes:
+                original_phonemes.remove('ː')
+            if 'ˌ' in original_phonemes:
+                original_phonemes.remove('ˌ')
+            phonemes = original_phonemes.copy()
+            random.shuffle(phonemes)
+            logger.debug(f'Original Phonemes: {original_phonemes}')
+            logger.debug(f'Shuffled Phonemes: {phonemes}')
+            return phonemes, original_phonemes
+        return [], []
 
     def set_positions(self):
         self.test_positions = []
