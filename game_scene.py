@@ -144,21 +144,21 @@ class MainGame(Entity):
         self.rotated_y -= 1
         self.next_block.rotation = Vec3(10, self.rotated_y, 30)
 
-    def update(self):
-        print('working')
-        if self.player.y <= -100:
-            self.player.y = 0
-            self.score -= 1
-        self.update_score()
-        if self.phoneme_store:
-            print('Phoneme store:')
-            if self.phoneme_store.phonemes:
-                print(self.phoneme_store.phonemes)
-                self.next_block.texture = PhonemeEngine.textures[self.phoneme_store.phonemes[-1]]
-        else:
-            self.next_block.texture = 'index'
-        self.spin_block()
-        if self.update_counter is not None:
-            self.update_counter += 1
-            if self.update_counter > 1000:
-                self.give_up_button.enable()
+    # def update(self):
+    #     print('working')
+    #     if self.player.y <= -100:
+    #         self.player.y = 0
+    #         self.score -= 1
+    #     self.update_score()
+    #     if self.phoneme_store:
+    #         print('Phoneme store:')
+    #         if self.phoneme_store.phonemes:
+    #             print(self.phoneme_store.phonemes)
+    #             self.next_block.texture = PhonemeEngine.textures[self.phoneme_store.phonemes[-1]]
+    #     else:
+    #         self.next_block.texture = 'index'
+    #     self.spin_block()
+    #     if self.update_counter is not None:
+    #         self.update_counter += 1
+    #         if self.update_counter > 1000:
+    #             self.give_up_button.enable()
