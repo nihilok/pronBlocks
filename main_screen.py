@@ -2,12 +2,14 @@ import json
 
 from ursina import *
 
-from game_scene import MainGame
-
-from MyComponents import MyButtonList, MyInput
-from phoneme_engine import PhonemeEngine
-
 app = Ursina()
+ARENA_DEPTH = 7
+
+
+from phoneme_engine import PhonemeEngine
+from game_scene import MainGame
+from MyComponents import MyButtonList, MyInput
+
 
 class MainScreen(Entity):
     def __init__(self, **kwargs):
@@ -92,7 +94,7 @@ class MainScreen(Entity):
 
         if self.main_menu.enabled:
             if key == "escape":
-                if self.game.game.started:
+                if self.game.started:
                     # Resume
                     self.game_screen.enable()
                     self.main_menu.disable()
@@ -119,11 +121,26 @@ class MainScreen(Entity):
 
     def update(self):
         self.game.spin_block()
+        if self.game.started:
+            if self.game.player.y <= -100:
+                self.game.player.y = 0
+                self.game.score -= 1
+            self.game.update_score()
+            if self.game.phoneme_store:
+                if self.game.phoneme_store.phonemes:
+                    self.game.next_block.texture = PhonemeEngine.textures[self.game.phoneme_store.phonemes[-1]]
+                else:
+                    self.game.next_block.texture = 'index'
+
+            if self.game.update_counter is not None:
+                self.game.update_counter += 1
+                if self.game.update_counter > 1000:
+                    self.game.give_up_button.enable()
 
 # Setup window title
 window.title = "Pron Blocks"
 window.fps_counter.disable()
-window.fullscreen = True
+window.fullscreen = False
 window.exit_button.visible = False
 
 # Call our menu
