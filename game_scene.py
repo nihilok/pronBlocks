@@ -47,6 +47,7 @@ class MainGame(Entity):
             enabled=False,
             scale=15
         )
+
     def create_clouds(self):
         self.sky.enable()
         for i in range(20):
@@ -78,7 +79,8 @@ class MainGame(Entity):
         self.started = True
         word = self.phoneme_store.get_new_word()
         self.update_counter = 0
-        self.give_up_button.disable()
+        if self.give_up_button.enabled:
+            self.give_up_button.disable()
         if self.reset_text.enabled:
             self.reset_text.disable()
         if word is not None:

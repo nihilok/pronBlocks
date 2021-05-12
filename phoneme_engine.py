@@ -105,7 +105,7 @@ class PhonemeEngine:
         self.phonemes, self.original_phonemes = [], []
         self.full_audio_dict = {}
 
-    # TODO: make the next 2 methods async:
+    # TODO: make the next 2 methods async and add fallback to web-scraping method:
     def pron(self):
         if self.pron_response:
             # data = {
