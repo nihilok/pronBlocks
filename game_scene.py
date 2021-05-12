@@ -21,15 +21,15 @@ class MainGame(Entity):
         self.help_text = Text(
             '',
             parent=camera.ui,
-            x=-.5,
-            y=.4,
+            x=-.6,
+            y=.35,
             enabled=False
         )
         self.score_text = Text(
             '',
             parent=camera.ui,
             x=.5,
-            y=.4,
+            y=.35,
             enabled=False
         )
         self.player = None
@@ -78,6 +78,7 @@ class MainGame(Entity):
         self.started = True
         word = self.phoneme_store.get_new_word()
         self.update_counter = 0
+        self.give_up_button.disable()
         if self.reset_text.enabled:
             self.reset_text.disable()
         if word is not None:
