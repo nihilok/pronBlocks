@@ -116,8 +116,8 @@ class MainScreen(Entity):
         if self.game_screen.enabled:
             if key == "escape":
                 # Close help window and show main menu
-                self.game_screen.disable()
                 self.main_menu.enable()
+                self.game_screen.disable()
 
     def update(self):
         self.game.spin_block()
@@ -140,7 +140,7 @@ class MainScreen(Entity):
 # Setup window title
 window.title = "Pron Blocks"
 window.fps_counter.disable()
-window.fullscreen = False
+window.fullscreen = True
 window.exit_button.visible = False
 
 # Call our menu

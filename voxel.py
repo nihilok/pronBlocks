@@ -47,7 +47,7 @@ class Voxel(Button):
                             self.parent_game.score -= 1
                             self.phoneme_store.test_positions.append((self.position[0], phoneme))
                             self.play_sound(phoneme)
-                            print(phoneme)
+                            logger.debug(phoneme)
                             if not len(self.phoneme_store.phonemes):
                                 invoke(self.check_win, delay=.5)
                         else:
