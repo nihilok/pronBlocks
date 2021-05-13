@@ -7,6 +7,7 @@ import os
 from ursina import Audio
 
 from ox_dic_api import get_pron
+
 logger = logging.getLogger('pronBlocks')
 
 class PhonemeEngine:
@@ -194,6 +195,7 @@ class PhonemeEngine:
                     colons += 1
             for i in range(colons):
                 original_phonemes.remove('ː')
+            original_phonemes.remove('ː')
             diphthongs = {'aɪ', 'eə', 'əʊ', 'ʊə', 'ɪə', 'aʊ', 'ɔɪ', 'eɪ'}
             subs = [pron[i: j] for i in range(len(pron)) for j in range(i + 1, len(pron) + 1) if
                    len(pron[i:j]) == 2]
