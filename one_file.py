@@ -543,6 +543,8 @@ class MainScreen(Entity):
             self.main_menu.disable()
             self.text_field.enable()
 
+        self.menu_help = Text("Use UP and DOWN arrows to navigate menu", parent=self.main_menu, y=-0.3, x=0, origin=(0, 0), enabled=False)
+
         self.mbl = MyButtonList(button_dict={
             "Start": Func(self.start_game),
             "Words": Func(words_menu_btn),
@@ -550,7 +552,7 @@ class MainScreen(Entity):
         }, y=-0.35, parent=self.main_menu)
 
         Text("OPTIONS MENU", parent=self.words_menu, y=0.4, x=0, origin=(0, 0))
-        Text("Press Enter to save or ESC to go back", parent=self.words_menu, y=-0.25, x=0, origin=(0, 0))
+        Text("Press ESC to go back, or Enter to update", parent=self.words_menu, y=-0.2, x=0, origin=(0, 0))
         def options_back_btn_action():
             self.main_menu.enable()
             self.words_menu.disable()
@@ -583,6 +585,7 @@ class MainScreen(Entity):
         self.main_menu.disable()
         self.background.disable()
         self.game.build()
+        self.game.player.enable()
 
     def update_word_list(self):
         self.word_list = re.split(' |, ', self.text_field.text)
@@ -628,6 +631,8 @@ class MainScreen(Entity):
             if key == "escape":
                 # Close help window and show main menu
                 self.main_menu.enable()
+                self.menu_help.enable()
+                self.game.player.disable()
                 self.game.reset_text.disable()
                 self.game_screen.disable()
 
