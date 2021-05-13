@@ -46,7 +46,7 @@ class PhonemeEngine:
         'ɪ': Audio('sounds/i.mp3', autoplay=False),
         'h': Audio('sounds/h.mp3', autoplay=False),
         'f': Audio('sounds/f.mp3', autoplay=False),
-        'ɡ': Audio('sounds/g.mp3', autoplay=False),
+        'g': Audio('sounds/g.mp3', autoplay=False),
         'i': Audio('sounds/ii.mp3', autoplay=False),
         'd': Audio('sounds/d.mp3', autoplay=False),
         'p': Audio('sounds/p.mp3', autoplay=False),
@@ -71,7 +71,14 @@ class PhonemeEngine:
         'ɜ': Audio('sounds/ir.mp3', autoplay=False),
         'ŋ': Audio('sounds/ng.mp3', autoplay=False),
         'ʤ': Audio('sounds/dge.mp3', autoplay=False),
-        'a': Audio('sounds/ai.mp3', autoplay=False),
+        'aɪ': Audio('sounds/ai.mp3', autoplay=False),
+        'eə': Audio('sounds/euh.mp3', autoplay=False),
+        'əʊ': Audio('sounds/oh.mp3', autoplay=False),
+        'ʊə': Audio('sounds/uuh.mp3', autoplay=False),
+        'ɪə': Audio('sounds/iuh.mp3', autoplay=False),
+        'aʊ': Audio('sounds/au.mp3', autoplay=False),
+        'ɔɪ': Audio('sounds/oy.mp3', autoplay=False),
+        'eɪ': Audio('sounds/ei.mp3', autoplay=False),
         'ɑ': Audio('sounds/ar.mp3', autoplay=False),
         'ʌ': Audio('sounds/uhh.mp3', autoplay=False),
         'win': Audio('sounds/twang.mp3', autoplay=False),
@@ -87,11 +94,11 @@ class PhonemeEngine:
         'l': 'textures/l.png',
         'n': 'textures/n.png',
         's': 'textures/s.png',
-        'ɪ': 'textures/I.png',
+        'ɪ': 'textures/i.png',
         'h': 'textures/h.png',
         'f': 'textures/f.png',
         'ɡ': 'textures/g.png',
-        'i': 'textures/i.png',
+        'i': 'textures/ii.png',
         'd': 'textures/d.png',
         'p': 'textures/p.png',
         't': 'textures/t.png',
@@ -115,9 +122,16 @@ class PhonemeEngine:
         'ɜ': 'textures/ir.png',
         'ŋ': 'textures/ng.png',
         'ʤ': 'textures/dge.png',
-        'a': 'textures/ai.png',
+        'aɪ': 'textures/ai.png',
         'ɑ': 'textures/ar.png',
-        'ʌ': 'textures/uhh.png'
+        'ʌ': 'textures/uhh.png',
+        'eə': 'textures/euh.png',
+        'əʊ': 'textures/oh.png',
+        'ʊə': 'textures/uuh.png',
+        'ɪə': 'textures/iuh.png',
+        'aʊ': 'textures/au.png',
+        'ɔɪ': 'textures/oy.png',
+        'eɪ': 'ei.png'
     }
 
     def __init__(self, words: list):
@@ -175,12 +189,13 @@ class PhonemeEngine:
     def get_phonemes(self):
         pron = self.pron()
         if pron:
-            pron = pron.replace('ɛ', 'e')
             pron = pron.replace('əː', 'ɜː')
             pron = pron.replace('a', 'æ')
             pron = pron.replace('ɛː', 'eə')
+            pron = pron.replace('ɛ', 'e')
             pron = pron.replace('ʌɪ', 'aɪ')
             pron = pron.replace('(ə)', '')
+            pron = pron.replace('tʃ', 'ʧ')
             original_phonemes = list(pron)
             if "'" in original_phonemes:
                 original_phonemes.remove("'")
@@ -192,6 +207,21 @@ class PhonemeEngine:
                 original_phonemes.remove('ː')
             if 'ˌ' in original_phonemes:
                 original_phonemes.remove('ˌ')
+
+            diphthongs = {'aɪ', 'eə', 'əʊ', 'ʊə', 'ɪə', 'aʊ', 'ɔɪ', 'eɪ'}
+            phonemes = []
+            subs = [pron[i: j] for i in range(len(pron)) for j in range(i + 1, len(pron) + 1) if
+                   len(pron[i:j]) == 2]
+            for sub in subs:
+                if sub in diphthongs:
+                    for i, p in enumerate(original_phonemes):
+                        if i < len(original_phonemes):
+                            if p == sub[0] and original_phonemes[i+1] == sub[1]:
+                                original_phonemes[i] = sub
+                                original_phonemes.pop(i+1)
+
+
+
             phonemes = original_phonemes.copy()
             random.shuffle(phonemes)
             logger.debug(f'Original Phonemes: {original_phonemes}')
