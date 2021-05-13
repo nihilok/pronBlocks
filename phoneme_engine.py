@@ -6,7 +6,7 @@ import re
 import os
 from ursina import Audio
 
-from od_api import get_pron
+from ox_dic_api import get_pron
 logger = logging.getLogger('pronBlocks')
 
 class PhonemeEngine:
