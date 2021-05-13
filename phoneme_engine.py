@@ -108,7 +108,7 @@ class PhonemeEngine:
         'ɪə': 'textures/iuh.png',
         'aʊ': 'textures/au.png',
         'ɔɪ': 'textures/oy.png',
-        'eɪ': 'ei.png'
+        'eɪ': 'textures/ei.png'
     }
 
     def __init__(self, words: list):
