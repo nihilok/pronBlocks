@@ -358,7 +358,7 @@ class MainGame(Entity):
             enabled=False
         )
         self.player = None
-        self.ground = Entity(model='plane', scale=(100, 1, 100), y=-1, color=color.yellow.tint(-.2), texture='white_cube',
+        self.ground = Entity(model='plane', scale=(100, 1, 100), y=-1, color=color.yellow.tint(-.2), texture='grass.jpg',
                              texture_scale=(100, 100), collider='box', enabled=False)
         self.sky = Entity(model='sphere', texture='sky2.jpg', scale=10000, double_sided=True, color=color.white, enabled=False)
         self.rotated_y = 30
