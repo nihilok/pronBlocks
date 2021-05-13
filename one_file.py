@@ -188,6 +188,7 @@ class PhonemeEngine:
 
     def get_phonemes(self):
         pron = self.pron()
+        print(pron)
         if pron:
             pron = pron.replace('əː', 'ɜː')
             pron = pron.replace('a', 'æ')
@@ -203,11 +204,14 @@ class PhonemeEngine:
                 original_phonemes.remove(",")
             if 'ˈ' in original_phonemes:
                 original_phonemes.remove('ˈ')
-            if 'ː' in original_phonemes:
-                original_phonemes.remove('ː')
             if 'ˌ' in original_phonemes:
                 original_phonemes.remove('ˌ')
-
+            colons = 0
+            for i in range(len(original_phonemes)-1):
+                if original_phonemes[i] == 'ː':
+                    colons += 1
+            for i in range(colons):
+                original_phonemes.remove('ː')
             diphthongs = {'aɪ', 'eə', 'əʊ', 'ʊə', 'ɪə', 'aʊ', 'ɔɪ', 'eɪ'}
             phonemes = []
             subs = [pron[i: j] for i in range(len(pron)) for j in range(i + 1, len(pron) + 1) if
