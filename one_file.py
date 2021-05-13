@@ -46,7 +46,7 @@ class PhonemeEngine:
         'ɪ': Audio('sounds/i.mp3', autoplay=False),
         'h': Audio('sounds/h.mp3', autoplay=False),
         'f': Audio('sounds/f.mp3', autoplay=False),
-        'g': Audio('sounds/g.mp3', autoplay=False),
+        'ɡ': Audio('sounds/g.mp3', autoplay=False),
         'i': Audio('sounds/ii.mp3', autoplay=False),
         'd': Audio('sounds/d.mp3', autoplay=False),
         'p': Audio('sounds/p.mp3', autoplay=False),
@@ -144,46 +144,47 @@ class PhonemeEngine:
     # TODO: make the next 2 methods async and add fallback to web-scraping method:
     def pron(self):
         if self.pron_response:
-            # data = {
-            #     'text_to_transcribe': self.word,
-            #     'submit': "Show+transcription",
-            #     'output_dialect': 'br',
-            #     'output_style': 'only_tr',
-            #     'preBracket': '',
-            #     'postBracket': '',
-            #     'speech_support': '0'}
-            #
-            # response = requests.post('https://tophonetics.com/', data=data)
-            #
-            # for line in response.text.split('\n'):
-            #     if line.startswith('<div id="transcr_output"><span class="transcribed_word">'):
-            #         word_plus = line[len('<div id="transcr_output"><span class="transcribed_word">'):]
-            #         pattern = r'^\w+'
-            #         match = re.match(pattern, word_plus)
-            #         if match:
-            #             pron = match.group(0)
-            #             logger.debug(f'Pron: {pron}')
-            #             return pron
-            # print(self.pron_response[0][0])
             return self.pron_response[0][0]
+        else:
+            data = {
+                'text_to_transcribe': self.word,
+                'submit': "Show+transcription",
+                'output_dialect': 'br',
+                'output_style': 'only_tr',
+                'preBracket': '',
+                'postBracket': '',
+                'speech_support': '0'}
+
+            response = requests.post('https://tophonetics.com/', data=data)
+            for line in response.text.split('\n'):
+                if line.startswith('<div id="transcr_output"><span class="transcribed_word">'):
+                    word_plus = line[len('<div id="transcr_output"><span class="transcribed_word">'):]
+                    pattern = r'^\w+'
+                    match = re.match(pattern, word_plus)
+                    if match:
+                        pron = match.group(0)
+                        logger.debug(f'Pron: {pron}')
+                        return pron
         return None
 
     def get_full_audio(self):
-        # url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
-        # params = {
-        #     "headers": {
-        #         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-        #         "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
-        #         "Accept-Language": "en-GB,en;q=0.5",
-        #         "Range": "bytes=0-"
-        #     },
-        # }
         if self.pron_response:
             url = self.pron_response[1]
-            response = requests.get(url) #, **params)
-            file = response.content
-            open(f'sounds/{self.word}.mp3', 'wb').write(file)
-            self.full_audio_dict[self.word] = Audio(f'sounds/{self.word}.mp3')
+            response = requests.get(url)
+        else:
+            url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
+            params = {
+                "headers": {
+                    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
+                    "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
+                    "Accept-Language": "en-GB,en;q=0.5",
+                    "Range": "bytes=0-"
+                },
+            }
+            response = requests.get(url, **params)
+        file = response.content
+        open(f'sounds/{self.word}.mp3', 'wb').write(file)
+        self.full_audio_dict[self.word] = Audio(f'sounds/{self.word}.mp3')
 
 
     def get_phonemes(self):
@@ -332,16 +333,6 @@ class Voxel(Button):
             PhonemeEngine.sounds.get('lose').play()
 
 
-'''
-ɜkit tɜki
-ɜkit tɜki
-tɜkit tɜki
-tɜkit tɜki
-tɜkt tɜki
-tɜkit tɜki
-'''
-
-
 class MainGame(Entity):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -417,6 +408,8 @@ class MainGame(Entity):
             self.give_up_button.disable()
         if self.reset_text.enabled:
             self.reset_text.disable()
+        if self.ground.enabled:
+            self.ground.disable()
         if word is not None:
             if self.phoneme_store.pron() is not None:
                 self.help_text.text = f'The word is: "{self.phoneme_store.word}"\nLeft click in the green area to lay a phoneme,\nright click to pick one up.'
@@ -483,25 +476,6 @@ class MainGame(Entity):
     def spin_block(self):
         self.rotated_y -= 1
         self.next_block.rotation = Vec3(10, self.rotated_y, 30)
-
-    # def update(self):
-    #     print('working')
-    #     if self.player.y <= -100:
-    #         self.player.y = 0
-    #         self.score -= 1
-    #     self.update_score()
-    #     if self.phoneme_store:
-    #         print('Phoneme store:')
-    #         if self.phoneme_store.phonemes:
-    #             print(self.phoneme_store.phonemes)
-    #             self.next_block.texture = PhonemeEngine.textures[self.phoneme_store.phonemes[-1]]
-    #     else:
-    #         self.next_block.texture = 'index'
-    #     self.spin_block()
-    #     if self.update_counter is not None:
-    #         self.update_counter += 1
-    #         if self.update_counter > 1000:
-    #             self.give_up_button.enable()
 
 
 class MyInput(TextField):
@@ -603,7 +577,6 @@ class MainScreen(Entity):
         self.game.build()
 
     def update_word_list(self):
-        # self.word_list = [word.strip() for word in self.text_field.text.split()]
         self.word_list = re.split(' |, ', self.text_field.text)
         json_obj = {'word_list': self.word_list}
         with open('word_list.json', 'w') as f:
@@ -613,7 +586,6 @@ class MainScreen(Entity):
         self.text_field.disable()
 
     def input(self, key):
-
         if key == 'enter':
             if self.main_menu.enabled and self.mbl.action:
                 if callable(self.mbl.action):
