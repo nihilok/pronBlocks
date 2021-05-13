@@ -1,7 +1,5 @@
 import json
-import random
 import requests
-import re
 import logging
 from random import randint
 from ursina import *
@@ -16,7 +14,6 @@ app_id = 'cc2a92a7'
 app_key = '0ed75d7d62b9eabd0231cbaadef1f995'
 
 language = 'en-gb'
-# fields = 'registers,domainClasses,pronunciations'
 strictMatch = 'false'
 
 def get_word_info(word):
@@ -26,7 +23,6 @@ def get_word_info(word):
 
 def get_pron(word):
     r = get_word_info(word).json()
-    # print(len(r.json()['results']))
     if r.get('results'):
         pron = (r['results'][0]['lexicalEntries'][0]['entries'][0]['pronunciations'][0]['phoneticSpelling'],
                 '(' + r['results'][0]['lexicalEntries'][0]['entries'][0]['pronunciations'][0]['dialects'][0] + ')')
@@ -217,7 +213,6 @@ class PhonemeEngine:
             for i in range(colons):
                 original_phonemes.remove('ː')
             diphthongs = {'aɪ', 'eə', 'əʊ', 'ʊə', 'ɪə', 'aʊ', 'ɔɪ', 'eɪ'}
-            phonemes = []
             subs = [pron[i: j] for i in range(len(pron)) for j in range(i + 1, len(pron) + 1) if
                    len(pron[i:j]) == 2]
             for sub in subs:

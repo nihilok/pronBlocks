@@ -1,9 +1,8 @@
 import random
 
-from ursina import Entity, Text, camera, Vec3, application, color, destroy, Button, scene, invoke, Vec2
+from ursina import Entity, Text, camera, Vec3, color, destroy, Button, scene, invoke, Vec2
 from ursina.prefabs.first_person_controller import FirstPersonController
 
-from phoneme_engine import PhonemeEngine
 from voxel import Voxel
 from constants import ARENA_DEPTH
 
@@ -33,7 +32,7 @@ class MainGame(Entity):
             enabled=False
         )
         self.player = None
-        self.ground = Entity(model='plane', scale=(100, 1, 100), y=-1, color=color.yellow.tint(-.2), texture='white_cube',
+        self.ground = Entity(model='plane', scale=(100, 1, 100), y=-1, color=color.yellow.tint(-.2), texture='grass.jpg',
                              texture_scale=(100, 100), collider='box', enabled=False)
         self.sky = Entity(model='sphere', texture='sky2.jpg', scale=10000, double_sided=True, color=color.white, enabled=False)
         self.rotated_y = 30
@@ -83,6 +82,8 @@ class MainGame(Entity):
             self.give_up_button.disable()
         if self.reset_text.enabled:
             self.reset_text.disable()
+        if self.ground.enabled:
+            self.ground.disable()
         if word is not None:
             if self.phoneme_store.pron() is not None:
                 self.help_text.text = f'The word is: "{self.phoneme_store.word}"\nLeft click in the green area to lay a phoneme,\nright click to pick one up.'
@@ -149,22 +150,3 @@ class MainGame(Entity):
     def spin_block(self):
         self.rotated_y -= 1
         self.next_block.rotation = Vec3(10, self.rotated_y, 30)
-
-    # def update(self):
-    #     print('working')
-    #     if self.player.y <= -100:
-    #         self.player.y = 0
-    #         self.score -= 1
-    #     self.update_score()
-    #     if self.phoneme_store:
-    #         print('Phoneme store:')
-    #         if self.phoneme_store.phonemes:
-    #             print(self.phoneme_store.phonemes)
-    #             self.next_block.texture = PhonemeEngine.textures[self.phoneme_store.phonemes[-1]]
-    #     else:
-    #         self.next_block.texture = 'index'
-    #     self.spin_block()
-    #     if self.update_counter is not None:
-    #         self.update_counter += 1
-    #         if self.update_counter > 1000:
-    #             self.give_up_button.enable()

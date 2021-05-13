@@ -6,8 +6,8 @@ from ursina import Button, scene, color, invoke, mouse, destroy
 from constants import ARENA_DEPTH
 from phoneme_engine import PhonemeEngine
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('pronBlocks')
+
 
 class Voxel(Button):
     def __init__(self, engine: PhonemeEngine, parent_game, position=(0, 0, 0), texture='rect835.png',
@@ -79,15 +79,4 @@ class Voxel(Button):
             invoke(self.parent_game.build, delay=4)
         elif not self.parent_game.correct and check != test:
             logger.debug(check + ' ' + test)
-            print(check + ' ' + test)
             PhonemeEngine.sounds.get('lose').play()
-
-
-'''
-ɜkit tɜki
-ɜkit tɜki
-tɜkit tɜki
-tɜkit tɜki
-tɜkt tɜki
-tɜkit tɜki
-'''
