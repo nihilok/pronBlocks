@@ -576,6 +576,7 @@ class MainScreen(Entity):
         word_list = self.word_list
         if self.game.phoneme_store is not None:
             if self.game.phoneme_store.words:
+                self.game.phoneme_store.words.append(self.game.phoneme_store.word)
                 word_list = self.game.phoneme_store.words
         self.game.phoneme_store = PhonemeEngine(words=word_list)
         self.game_screen.enable()
