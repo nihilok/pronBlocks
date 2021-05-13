@@ -47,6 +47,7 @@ class PhonemeEngine:
         'h': Audio('sounds/h.mp3', autoplay=False),
         'f': Audio('sounds/f.mp3', autoplay=False),
         'ɡ': Audio('sounds/g.mp3', autoplay=False),
+        'g': Audio('sounds/g.mp3', autoplay=False),
         'i': Audio('sounds/ii.mp3', autoplay=False),
         'd': Audio('sounds/d.mp3', autoplay=False),
         'p': Audio('sounds/p.mp3', autoplay=False),
@@ -98,6 +99,7 @@ class PhonemeEngine:
         'h': 'textures/h.png',
         'f': 'textures/f.png',
         'ɡ': 'textures/g.png',
+        'g': 'textures/g.png',
         'i': 'textures/ii.png',
         'd': 'textures/d.png',
         'p': 'textures/p.png',
@@ -548,7 +550,7 @@ class MainScreen(Entity):
         }, y=-0.35, parent=self.main_menu)
 
         Text("OPTIONS MENU", parent=self.words_menu, y=0.4, x=0, origin=(0, 0))
-
+        Text("Press Enter to save or ESC to go back", parent=self.words_menu, y=-0.25, x=0, origin=(0, 0))
         def options_back_btn_action():
             self.main_menu.enable()
             self.words_menu.disable()
@@ -570,7 +572,13 @@ class MainScreen(Entity):
             setattr(self, key, value)
 
     def start_game(self):
-        self.game.phoneme_store = PhonemeEngine(words=self.word_list)
+        if not self.game.phoneme_store:
+            self.game.phoneme_store = PhonemeEngine(words=self.word_list)
+        else:
+            if self.game.phoneme_store.words:
+                self.game.phoneme_store = PhonemeEngine(words=self.game.phoneme_store.words)
+            else:
+                self.game.phoneme_store.words = self.word_list
         self.game_screen.enable()
         self.main_menu.disable()
         self.background.disable()
@@ -620,6 +628,7 @@ class MainScreen(Entity):
             if key == "escape":
                 # Close help window and show main menu
                 self.main_menu.enable()
+                self.game.reset_text.disable()
                 self.game_screen.disable()
 
     def update(self):
