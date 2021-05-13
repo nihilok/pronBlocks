@@ -170,22 +170,23 @@ class PhonemeEngine:
         return None
 
     def get_full_audio(self):
-        if self.pron_response:
-            url = self.pron_response[1]
-            response = requests.get(url)
-        else:
-            url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
-            params = {
-                "headers": {
-                    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-                    "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
-                    "Accept-Language": "en-GB,en;q=0.5",
-                    "Range": "bytes=0-"
-                },
-            }
-            response = requests.get(url, **params)
-        file = response.content
-        open(f'sounds/{self.word}.mp3', 'wb').write(file)
+        if not os.path.exists(f'sounds/{self.word}.mp3'):
+            if self.pron_response:
+                url = self.pron_response[1]
+                response = requests.get(url)
+            else:
+                url = f"https://d1qx7pbj0dvboc.cloudfront.net/{self.word}.mp3"
+                params = {
+                    "headers": {
+                        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
+                        "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
+                        "Accept-Language": "en-GB,en;q=0.5",
+                        "Range": "bytes=0-"
+                    },
+                }
+                response = requests.get(url, **params)
+            file = response.content
+            open(f'sounds/{self.word}.mp3', 'wb').write(file)
         self.full_audio_dict[self.word] = Audio(f'sounds/{self.word}.mp3')
 
 
