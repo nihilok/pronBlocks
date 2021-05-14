@@ -37,7 +37,7 @@ class MainGame(Entity):
         self.sky = Entity(model='sphere', texture='sky2.jpg', scale=10000, double_sided=True, color=color.white, enabled=False)
         self.rotated_y = 30
         self.next_block = Entity(parent=camera.ui, rotation=Vec3(10, 30, 30), model='cube', scale=.1, x=.7, y=.2, texture='index')
-        self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-1, z=ARENA_DEPTH, y=3, on_click=self.give_up, enabled=False, scale_x=2)
+        self.give_up_button = Button(parent=scene, text='give up', double_sided=True, x=-2, z=ARENA_DEPTH, y=4, on_click=self.give_up, enabled=False, scale_x=2)
         self.reset_text = Text(
             'Press ESC to change words and/or start again.',
             parent=scene,

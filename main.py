@@ -156,8 +156,10 @@ class MainScreen(Entity):
 
             if self.game.update_counter is not None:
                 self.game.update_counter += 1
-                if self.game.update_counter > 1000:
+                if self.game.update_counter > 1000 and not self.game.correct:
                     self.game.give_up_button.enable()
+                elif self.game.correct:
+                    self.game.give_up_button.disable()
 
 
 # Setup window title
